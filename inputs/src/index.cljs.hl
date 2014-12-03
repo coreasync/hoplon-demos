@@ -63,6 +63,36 @@
       (option :value "gold" "gold")
       (option :value "indigo" "indigo"))
     (p (text "Value of select input: ~{select-input}"))
+    (h2 "A dynamic select input")
+    (defc dynamic-select-input "gold")
+    (defc dynamic-options [1 2 3])
+    (input
+     :type "text"
+     :placeholder "Type something here"
+     :value text-input
+     :change #(do
+                (reset! dynamic-select-input @%)
+                (reset! dynamic-options (repeat 10 @%))
+                (.log js/console (str @dynamic-options))
+                )
+     )
+
+    (p (text "Value of text input: ~{(inc (js/parseInt dynamic-select-input))}"))
+    (select
+     :change #(reset! dynamic-select-input @%)
+     :value dynamic-select-input
+     (option :value "blue"  "Blue")
+     (option :value "green" "Green")
+     (option :value "gold" "Gold")
+     (option :value "indigo" "Indigo")
+     (loop-tpl :bindings [n dynamic-options]
+               (option (str "option:" @n)))
+     )
+
+    (ul "DEBUG"
+     (loop-tpl :bindings [n dynamic-options]
+               (li (text (str n))))
+     )
 
     (h2 "Multiple select input")
     (select
